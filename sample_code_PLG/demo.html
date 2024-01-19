@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://vjs.fusioncdn.com/7.21.4/video-js.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/@videojs/themes@1/dist/fantasy/index.css" rel="stylesheet">
+    <script src="https://vjs.fusioncdn.com/7.21.4/video.min.js"></script>
+    <!-- Configuration might be different along with Stream. -->
+    <script src="https://vsp.mlytics.co/cgrr1l3vdp42j9d4c4c0-mlysdk.js"></script>
+    <script src="https://jsdelivr.fusioncdn.com/npm/@mlytics/p2sp-sdk@0.16.0/bundle/driver.min.js"></script>
+    <script
+        src="https://jsdelivr.fusioncdn.com/npm/@mlytics/p2sp-sdk@0.16.0/bundle/peripheral/player/videojs-hls.min.js"></script>
+</head>
+
+<style>
+    div.video-panel {
+        display: flex;
+        justify-content: center;
+        /* 水平居中 */
+        align-items: center;
+        /* 垂直居中 */
+        min-height: 100vh;
+        /* 视口高度 */
+        margin: 0;
+        /* 移除默认的 margin */
+        background-color: #f0f0f0;
+        /* 背景颜色，可根据需要更改 */
+    }
+
+    .video-container {
+        position: relative;
+        /* Ensure the container is positioned relative */
+        width: 800px;
+        /* Width of the video player */
+        height: 640px;
+        /* Height of the video player */
+    }
+
+    #overlay-container {
+        position: absolute;
+        /* Position overlay absolutely within the container */
+        top: 0;
+        left: 0;
+        width: 100%;
+        /* Full width of the container */
+        height: 100%;
+        /* Full height of the container */
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Optional background color */
+        z-index: 10;
+        /* Ensure it's above other elements */
+    }
+
+    #overlay-container button {
+        position: relative;
+        /* Maintain the position of the button inside overlay */
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+
+<body>
+    <div class="video-panel">
+        <div class="video-container">
+            <video id="video" class="video-js vjs-theme-fantasy"
+                style="width: 800px; height: 640px; background-color: black;"></video>
+            <div id="overlay-container" class="hide" data-hasshow="0">
+                <!-- <button id="closeOverlay">關閉</button> -->
+                <script type="text/javascript" async src="//ads.aralego.com/sdk"></script>
+                <ins id="overlay" class="ucfad_async" style="display:none;width:336px;height:280px"
+                    data-ad_unit_id="ad-E2B34697283DE767C7A9723768D636A8" data-format="336,280;" data-gdpr="${GDPR}"
+                    data-euconsent-v2="${GDPR_CONSENT_607}"></ins>
+                <script>
+                    (ucfad_async = window.ucfad_async || []).push({});
+                </script>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Mlytics Wesley Tsai_PLG_Banner_336x280_sport -->
+
+
+    <script>
+        const appearADSecond = 5;
+        const showADSecond = 5;
+        const overlay = document.getElementById('overlay-container');
+        const closeOverlay = document.getElementById('closeOverlay');
+
+        const driver = mlysdk.driver.initialize({
+            server: {
+                host: {
+                    fqdn: "vsp.mlytics.co"
+                }
+            }
+        })
+
+        const src = "https://1001681370890-cloudfront-tnsqfrda.xpmon.com/hls/8a53f8f0-4087-43b9-ba4d-bb672304a452.mp4/8a53f8f0-4087-43b9-ba4d-bb672304a452.m3u8"
+        const video = document.getElementById('video')
+        const adapter = driver.extensions.VideojsHlsPlayerPlugin.create(video, {
+            autoplay: false,
+            controls: true,
+            muted: true,
+            sources: [{
+                src,
+                type: 'application/vnd.apple.mpegurl'
+            }]
+        })
+        const videojsPlayer = adapter.player
+
+        videojsPlayer.on('timeupdate', function () {
+            // console.log("🚀 ~ file: P2SP-680.html:111 ~ overlay.dataset.hasshow:", overlay.dataset.hasshow)
+            if (overlay.dataset.hasshow == 0 && videojsPlayer.currentTime() > appearADSecond) {
+                videojsPlayer.pause();
+                overlay.dataset.hasshow = 1;
+                overlay.classList.replace('hide', 'show');
+                setTimeout(() => {
+                    overlay.classList.replace('show', 'hide');
+                    videojsPlayer.play();
+                }, appearADSecond * 1000)
+            }
+        });
+
+        // closeOverlay.addEventListener('click', function () {
+        //     overlay.dataset.hasshow = 1;
+        //     overlay.style.display = 'none';
+        // });
+
+    </script>
+</body>
+
+</html>

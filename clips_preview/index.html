@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Clips Preview Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/dplayer@1.27.1/dist/DPlayer.min.js"></script>
+    <link href="https://vjs.fusioncdn.com/7.21.5/video-js.min.css" rel="stylesheet" />
+    <script src="https://vjs.fusioncdn.com/7.21.5/video.min.js"></script>
+    <style>
+        body {
+            background-color: rgb(53, 79, 82);
+            text-align: center;
+        }
+
+        .my-h1 {
+            color: rgb(102, 186, 183);
+        }
+
+        .demo-row {
+            display: inline-block;
+            height: auto;
+        }
+
+        .demo-row>h2 {
+            color: rgb(163, 177, 138);
+        }
+
+        .video-holder {
+            float: left;
+            display: inline;
+        }
+
+        .video-holder>* {
+            width: 300px;
+            margin-left: 2em;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="my-h1">Clips</h1>
+    <div class="demo-row">
+        <h2>png / DPlayer</h2>
+        <div class="video-holder" onmouseenter="applyDPlayer()" onmouseleave="removeDPlayer()">
+            <img src="onimai_4_clip.png" id="video-poster-dp" />
+            <div id="dp" class="clips"></div>
+        </div>
+    </div>
+    <div class="demo-row">
+        <h2>png / gif</h2>
+        <div class="video-holder" onmouseenter="applyGif()" onmouseleave="removeGif()">
+            <img src="onimai_4_clip.png" id="video-poster-gif" />
+        </div>
+    </div>
+    <div class="demo-row">
+        <h2>png / Videojs</h2>
+        <div class="video-holder" onmouseenter="applyVideojs()" onmouseleave="removeVideojs()">
+            <img src="onimai_4_clip.png" id="video-poster-vjs" />
+            <div id="vjs-holder" class="hide">
+                <video id="vjs-el" class="video-js"></video>
+            </div>
+        </div>
+    </div>
+    <script>
+        function applyDPlayer() {
+            let poster = document.getElementById('video-poster-dp');
+            if (!!poster) {
+                poster.classList.add('hide');
+            }
+
+            let dp = self.dp = new DPlayer({
+                autoplay: true,
+                loop: true,
+                volume: 0,
+                container: document.getElementById('dp'),
+                video: {
+                    url: 'onimai_4_clip.mp4',
+                }
+            });
+            dp.video.controls = false;
+        }
+
+        function removeDPlayer() {
+            if (!!self.dp) {
+                self.dp.destroy();
+            }
+            let poster = document.getElementById('video-poster-dp');
+            if (!!poster) {
+                poster.classList.remove('hide');
+            }
+        }
+
+        function applyGif() {
+            let poster = document.getElementById('video-poster-gif');
+            if (!!poster) {
+                poster.src = 'onimai_4_clip.gif';
+            }
+        }
+
+        function removeGif() {
+            let poster = document.getElementById('video-poster-gif');
+            if (!!poster) {
+                poster.src = 'onimai_4_clip.png';
+            }
+        }
+
+        function applyVideojs() {
+            let vjs = self.vjs = videojs('vjs-el', {
+                loop: true,
+                autoplay: true,
+                controls: false,
+                restoreEl: true,
+                muted: true,
+                preload: 'auto',
+                aspectRatio: '16:9',
+                sources: [{
+                    src: 'onimai_4_clip.mp4',
+                    type: 'video/mp4'
+                }]
+            });
+            let vjsHolder = document.getElementById('vjs-holder');
+            vjsHolder.classList.remove('hide');
+
+            let poster = document.getElementById('video-poster-vjs');
+            if (!!poster) {
+                poster.classList.add('hide');
+            }
+        }
+
+        function removeVideojs() {
+            let poster = document.getElementById('video-poster-vjs');
+            if (!!poster) {
+                poster.classList.remove('hide');
+            }
+
+            if (!!self.vjs) {
+                let vjsHolder = document.getElementById('vjs-holder');
+                vjsHolder.classList.add('hide');
+                self.vjs.dispose();
+            }
+        }
+    </script>
+</body>
+
+</html>
